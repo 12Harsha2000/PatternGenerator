@@ -28,7 +28,6 @@
 #define new DEBUG_NEW
 #endif
 
-
 // CPatternGeneratorView
 
 IMPLEMENT_DYNCREATE(CPatternGeneratorView, CView)
@@ -56,10 +55,8 @@ CPatternGeneratorView::CPatternGeneratorView() noexcept
 	y = 200;
 	x1 = 300 + 150 * cos(3);
 	y1 = 200 + 150 * sin(3);
-	/*x2 = 300 + 200 * cos(3);
-	y2 = 200 + 200 * sin(3);*/
-
-
+	x2 = 300 + 200 * cos(3);
+	y2 = 200 + 200 * sin(3);
 }
 
 CPatternGeneratorView::~CPatternGeneratorView()
@@ -68,9 +65,6 @@ CPatternGeneratorView::~CPatternGeneratorView()
 
 BOOL CPatternGeneratorView::PreCreateWindow(CREATESTRUCT& cs)
 {
-	// TODO: Modify the Window class or styles here by modifying
-	//  the CREATESTRUCT cs
-
 	return CView::PreCreateWindow(cs);
 }
 
@@ -84,34 +78,54 @@ void CPatternGeneratorView::OnDraw(CDC* pDC)
 		return;
 
  //..
-	/*CPen redPen;
- 	redPen.CreatePen(PS_SOLID, 1, RGB(255, 0, 255));
-	CPen* pOldPen = pDC->SelectObject(&redPen);*/
-	CPen yellowPen(PS_SOLID, 2, RGB(255, 0, 0));
+	CPen greenPen(PS_SOLID, 2, RGB(0, 255, 0)); // Magenta color for the third planet's path
+	pDC->SelectObject(&greenPen);
+	pDC->Ellipse(100, 0, 500, 400);  // Circular path for the third planet
+
+	CPen yellowPen(PS_SOLID, 2, RGB(255, 255, 0));
 	CPen* pOldPen = pDC->SelectObject(&yellowPen);
 	pDC->Ellipse(450, 350, 150, 50);  // innermost ellipse
 	pDC->SelectObject(pOldPen);
 
-	CPen bluePen(PS_SOLID, 2, RGB(0, 0, 255));
-	pOldPen = pDC->SelectObject(&bluePen);
-	//pDC->SelectObject(&bluePen);
+	CPen orangePen(PS_SOLID, 2, RGB(255, 165, 0));
+	pOldPen = pDC->SelectObject(&orangePen);
 	pDC->Ellipse(400, 300, 200, 100); // path circle
 	pDC->SelectObject(&pOldPen);
 
+	CBrush brownBrush(RGB(139, 69, 19)); // Brown color
+	CBrush* pOldBrush = pDC->SelectObject(&brownBrush);
 
-	CPen greenPen(PS_SOLID, 2, RGB(0, 255, 0));
-	pDC->SelectObject(&greenPen);
+	CPen brownPen(PS_SOLID, 2, RGB(139, 69, 19));
+	pDC->SelectObject(&brownPen);
 	pDC->Ellipse(330, 230, 270, 170); // centre circle
-	//pDC->Ellipse(200, 100, 400, 300); // outermost ellipse
+	pDC->SelectObject(pOldBrush);
+	/*pDC->SelectObject(pOldPen);*/
 
 	// Draw moving objects
 	CPen redPen(PS_SOLID, 2, RGB(255, 0, 0));
 	pDC->SelectObject(&redPen);
 	pDC->Ellipse(x + 10, y + 10, x - 10, y - 10);       // moving object 1
 	pDC->Ellipse(x1 + 10, y1 + 10, x1 - 10, y1 - 10);   // moving object 2
-	//pDC->Ellipse(x2 + 10, y2 + 10, x2 - 10, y2 - 10);   // Moving object 3
+	
+	
+	// Draw the ring for the third moving object
+	CPen ringPen(PS_SOLID, 2, RGB(255,0, 0)); // Blue color for the ring
+	pDC->SelectObject(&ringPen);
+	
+	int ringRadius = 18; 
+	int ringX = x2; 
+	int ringY = y2; 
 
-	//pDC->SelectObject(pOldBrush);
+	pDC->Ellipse(ringX - ringRadius, ringY - ringRadius, ringX + ringRadius, ringY + ringRadius);
+
+	CBrush yellowBrush(RGB(255, 255, 0)); // Yellow color
+	CBrush* pOldBrushMoving = pDC->SelectObject(&yellowBrush);
+	//pDC->Ellipse(x2 + 10, y2 + 10, x2 - 10, y2 - 10);   // Moving object 3
+	int movingObjectSize = 20; 
+	pDC->Ellipse(ringX - movingObjectSize / 2, ringY - movingObjectSize / 2,
+		ringX + movingObjectSize / 2, ringY + movingObjectSize / 2);
+	pDC->SelectObject(pOldBrushMoving);
+
 	pDC->SelectObject(pOldPen);
 
 	// TODO: add draw code for native data here
@@ -156,7 +170,6 @@ void CPatternGeneratorView::OnContextMenu(CWnd* /* pWnd */, CPoint point)
 	theApp.GetContextMenuManager()->ShowPopupMenu(IDR_POPUP_EDIT, point.x, point.y, this, TRUE);
 #endif
 }
-
 
 // CPatternGeneratorView diagnostics
 
@@ -208,11 +221,9 @@ UINT CPatternGeneratorView::StartThread(LPVOID Param)
 {
 	CPatternGeneratorView* pView = (CPatternGeneratorView*)Param;
 
-
 	int j = 0;
 	while (1)
 	{
-
 		j = j + 6;
 
 
@@ -223,14 +234,12 @@ UINT CPatternGeneratorView::StartThread(LPVOID Param)
 		pView->x1 = 300 + 150 * cos(j+3);
 		pView->y1 = 200 + 150 * sin(j+3);
 
-		/*pView->x2 = 300 + 200 * cos(j + 6);
-		pView->y2 = 200 + 200 * sin(j + 6);*/
+		pView->x2 = 300 + 200 * cos(j + 6);
+		pView->y2 = 200 + 200 * sin(j + 6);
 
 		pView->Invalidate();
 
 		Sleep(200);
-
-
 	}  //..
 
 	// TODO: Add your implementation code here.

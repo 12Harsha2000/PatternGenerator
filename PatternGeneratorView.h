@@ -19,7 +19,7 @@ class CPatternGeneratorView : public CView
 {   //..
 	double x, y;   // Coordinates for the first object
 	double x1, y1; // Coordinates for the second object
-	//double x2, y2;  // Coordinates for the third planet
+	double x2, y2;  // Coordinates for the third planet
 	//.....
 	CWinThread* m_pCurrentThread;
 	//CArray<CPoint, CPoint> m_PointArray;  //..	
